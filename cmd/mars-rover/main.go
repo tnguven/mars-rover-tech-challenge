@@ -3,38 +3,41 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
+
+	"github.com/tnguven/mars-rover-challenge/internal/app"
+	"github.com/tnguven/mars-rover-challenge/internal/input"
 )
 
 func main() {
-
 	reader := bufio.NewReader(os.Stdin)
-
-	fmt.Print("Enter plateau size (e.g '5 5'): ")
-	plateauSize, _ := reader.ReadString('\n')
-
 	var inputBuilder strings.Builder
-	inputBuilder.WriteString(strings.TrimSpace(plateauSize) + "\n")
+
+	x, y := input.ReadPlateau(reader)
+	inputBuilder.WriteString(fmt.Sprintf("%d %d\n", x, y))
 
 	for {
-		fmt.Print("Enter rover start position (e.g '1 2 N'): ")
-		position, _ := reader.ReadString('\n')
-		inputBuilder.WriteString(strings.TrimSpace(position) + "\n")
+		start := input.ReadStartPosition(reader)
+		instr := input.ReadInstructions(reader)
 
-		fmt.Print("Enter rover instructions (e.g 'LMLMLMLMM'): ")
-		instructions, _ := reader.ReadString('\n')
-		inputBuilder.WriteString(strings.TrimSpace(instructions) + "\n")
+		inputBuilder.WriteString(start + "\n")
+		inputBuilder.WriteString(instr + "\n")
 
 		fmt.Print("Add another rover? (y/n): ")
 		another, _ := reader.ReadString('\n')
-		another = strings.ToLower(strings.TrimSpace(another))
-		if another != "y" {
+		if strings.ToLower(strings.TrimSpace(another)) != "y" {
 			break
 		}
 	}
 
-	input := inputBuilder.String()
+	results, err := app.RunMission(inputBuilder.String())
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	fmt.Printf("Inputs: %s", input)
+	for _, rover := range results {
+		fmt.Println(rover.String())
+	}
 }

@@ -1,59 +1,117 @@
-# Mars Rover technical Challenge
+# Mars Rover Technical Challenge Documentation
 
-## High level structure
+## Overview
 
-## Usage
+The Mars Rover Technical Challenge is a command-line application that simulates the navigation of rovers on a
+plateau surface on Mars. The application processes input to define the plateau's dimensions, the initial positions
+of the rovers, and their movement instructions. It then calculates the final positions and orientations of the 
+rovers after executing the instructions.
 
-## Challenge
+---
 
-The problem below requires some kind of input. You are free to implement any mechanism for
-feeding input into your solution (for example, using hard coded data within a unit test). You
-should provide sufficient evidence that your solution is complete by, as a minimum, indicating
-that it works correctly against the supplied test data.
-We highly recommend using a unit testing framework. Even if you have not used it before, it is
-simple to learn and incredibly useful.
-The code you write should be of production quality, and most importantly, it should be code you
-are proud of.
+## 🏁 How to Use
 
-## MARS ROVERS
+### 🔧 Prerequisites
 
-A squad of robotic rovers are to be landed by NASA on a plateau on Mars.
+- **Go**: Version 1.21 or higher.
+- **Make**: Optional but recommended for build and test automation.
 
-This plateau, which is curiously rectangular, must be navigated by the rovers so that their on
-board cameras can get a complete view of the surrounding terrain to send back to Earth.
+---
 
-A rover's position is represented by a combination of an x and y co-ordinates and a letter
-representing one of the four cardinal compass points. The plateau is divided up into a grid to
-simplify navigation. An example position might be 0, 0, N, which means the rover is in the bottom
-left corner and facing North.
+### 🚀 Running the Application
 
-In order to control a rover, NASA sends a simple string of letters. The possible letters are 'L', 'R'
-and 'M'. 'L' and 'R' makes the rover spin 90 degrees left or right respectively, without moving
-from its current spot.
+1. **Build the Application**:
+   Use the `make` command to build the application:
+   ```sh
+   make build
+   ```
+   This will compile the application into the bin directory:
+   ```sh
+   bin/mars-rover
+   ```
 
-'M' means move forward one grid point, and maintain the same heading.
-Assume that the square directly North from (x, y) is (x, y+1).
+2. **Run the Application**:
+   Execute the compiled binary:
+   ```sh
+   ./bin/mars-rover
+   ```
+    
+    Or just run the make file
+    ```sh
+    make run
+    ```
 
-### Input
+   Follow the prompts to input the plateau size, rover start positions, and movement instructions.
 
-The first line of input is the upper-right coordinates of the plateau, the lower-left coordinates are
-assumed to be 0,0.
+   Example input:
+   ```
+   Enter plateau size (e.g. '5 5'): 5 5
+   Enter rover start position (e.g. '1 2 N'): 1 2 N
+   Enter movement instructions (e.g. 'LMLMLMLMM'): LMLMLMLMM
+   Add another rover? (y/n): y
+   Enter rover start position (e.g. '1 2 N'): 3 3 E
+   Enter movement instructions (e.g. 'LMLMLMLMM'): MMRMMRMRRM
+   Add another rover? (y/n): n
+   ```
+   Example output:
+   ```
+   1 3 N
+   5 1 E
+   ```
 
-The rest of the input is information pertaining to the rovers that have been deployed. Each rover
-has two lines of input. The first line gives the rover's position, and the second line is a series of
-instructions telling the rover how to explore the plateau.
+---
 
-The position is made up of two integers and a letter separated by spaces, corresponding to the x
-and y co-ordinates and the rover's orientation.
+## 📂 Folder Structure
 
-Each rover will be finished sequentially, which means that the second rover won't start to move
-until the first one has finished moving.Output:
+The project is organized as follows:
 
-The output for each rover should be its final co-ordinates and heading.
+```
+.
+├── Makefile                    # Dev/build/test automation
+├── cmd/
+│   └── mars-rover/
+│       └── main.go             # CLI entry point
+├── internal/                   # Application packages (non-public)
+│   ├── app/                    # Orchestration logic (RunMission, etc.)
+│   ├── direction/              # Compass direction enum + logic
+│   ├── instruction/            # Movement instruction enum + parsing
+│   ├── input/                  # User input handling via stdin
+│   ├── parser/                 # Raw string input to domain model parser
+│   ├── plateau/                # Plateau size + boundary logic
+│   └── rover/                  # Rover state, movement, and execution
+└── bin/                        # Compiled binary output
+```
 
-#### Test Input
+---
 
-```txt
+## 🧪 Running Tests
+
+The project includes a comprehensive suite of unit tests to ensure correctness.
+
+1. **Run All Tests**:
+   Use the `make` command to execute all tests:
+   ```sh
+   make test
+   ```
+
+2. **Watch Tests**:
+   Automatically re-run tests on file changes:
+   ```sh
+   make test-watch
+   ```
+
+3. **Run Tests Manually**:
+   Use the `go test` command to run tests for specific packages:
+   ```sh
+   go test ./...
+   ```
+
+---
+
+## Example Input and Output
+
+### Input:
+```
 5 5
 1 2 N
 LMLMLMLMM
@@ -61,9 +119,8 @@ LMLMLMLMM
 MMRMMRMRRM
 ```
 
-#### Expected Output
-
-```txt
+### Output:
+```
 1 3 N
 5 1 E
 ```
